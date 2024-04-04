@@ -1,6 +1,6 @@
 import socket
 
-localIP = "10.42.0.1"
+localIP = "192.168.43.36"
 localPort = 3333
 bufferSize = 1 << 15
 
@@ -11,23 +11,17 @@ UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 UDPServerSocket.bind((localIP, localPort))
 print("UDP server up and listening")
 counter = 0
-data = []
+
 # Listen for incoming datagrams
 while (True):
-    if counter <= 5:
-        message, address = UDPServerSocket.recvfrom(bufferSize)
-        list_raw_data = list(message)
-        print(len(data))
-    else:
-        # print(f'{len(data)}_else')
-        print(data)
-        data = []
-        counter = 0
 
-    counter += 1
-    # print(len(list_raw_data))
+    message, address = UDPServerSocket.recvfrom(bufferSize)
+    list_raw_data = list(message)
+    # print(f"Message from Client:{message}")
+    # print(f"Client IP Address:{address}")
+
+    data = []
     for i in range(0, len(list_raw_data), 2):
-        num = (list_raw_data[i + 1] << 8 | list_raw_data[i]) & 0xFFF
-        # print(num)
+        num = (list_raw_data[i+1] << 12 | list_raw_data[i] << 4) & 0xFFFF
+        print(hex(num))
         data.append(num)
-

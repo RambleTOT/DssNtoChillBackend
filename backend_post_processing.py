@@ -11,7 +11,9 @@ app = Flask(__name__)
 @app.route('/')
 def get_statistics():
     # Загрузка аудиофайла
-    sample_rate, data = wav.read('audiofile-3.wav')
+    sample_rate, data = wav.read('audiofile.wav')
+
+    # Первый микрофон
 
     # Анализ амплитудного спектра
     fft_out = np.fft.fft(data)
@@ -44,16 +46,17 @@ def get_statistics():
     image_byte64 = base64.b64encode(buffer.read()).decode('utf-8')
 
     result = {
-        'min': str(min_value),
-        'max': str(max_value),
-        'mean': str(mean_value),
-        'median': str(median_value),
-        'noise': str(noise_db),
-        'std': str(std_deviation),
-        'graph': image_byte64
+        'min': [str(min_value)],
+        'max': [str(max_value)],
+        'mean': [str(mean_value)],
+        'median': [str(median_value)],
+        'noise': [str(noise_db)],
+        'std': [str(std_deviation)],
+        'graph': [image_byte64]
     }
 
     return jsonify(result)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
