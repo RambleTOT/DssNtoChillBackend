@@ -1,45 +1,33 @@
-# Модуль socket для сетевого программирования
-from socket import *
-import numpy as np
+import socket
 
-import math
-import wave
+localIP = "10.42.0.1"
+localPort = 3333
+bufferSize = 1 << 15
 
-# данные сервера
-host = '10.42.0.1'
-port = 3333
-addr = (host, port)
+# Create a datagram socket
+UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
-# socket - функция создания сокета
-# первый параметр socket_family может быть AF_INET или AF_UNIX
-# второй параметр socket_type может быть SOCK_STREAM(для TCP) или SOCK_DGRAM(для UDP)
-udp_socket = socket(AF_INET, SOCK_DGRAM)
-# bind - связывает адрес и порт с сокетом
-udp_socket.bind(addr)
-
+# Bind to address and ip
+UDPServerSocket.bind((localIP, localPort))
+print("UDP server up and listening")
+counter = 0
 data = []
-try:
-    # Бесконечный цикл работы программы
-    while True:
-        data_bytes = []
-        # print('wait data...')
+# Listen for incoming datagrams
+while (True):
+    if counter <= 5:
+        message, address = UDPServerSocket.recvfrom(bufferSize)
+        list_raw_data = list(message)
+        print(len(data))
+    else:
+        # print(f'{len(data)}_else')
+        print(data)
+        data = []
+        counter = 0
 
-        # recvfrom - получает UDP сообщения
-        conn, addr = udp_socket.recvfrom(1 << 15)
-        # print(f'addr:{addr} len:{len(conn)} data:{conn}')
-        data_bytes = list(conn)
-        # print(data_bytes)
-        for i in range(0, len(data_bytes), 2):
-            num = (data_bytes[i + 1] << 8) | (data_bytes[i] & 0xF)
-            print(num)
-            data.append(num)
-        # sendto - передача сообщения UDP
-        # udp_socket.sendto(b'message received by the server', addr)
-finally:
-    with wave.open("file.wav", 'wb') as file:
-        file.setnchannels(1)
-        # 2 bytes per sample.
-        file.setsampwidth(2)
-        file.setframerate(20_000)
-        file.writeframes(data.tobytes())
-    udp_socket.close()
+    counter += 1
+    # print(len(list_raw_data))
+    for i in range(0, len(list_raw_data), 2):
+        num = (list_raw_data[i + 1] << 8 | list_raw_data[i]) & 0xFFF
+        # print(num)
+        data.append(num)
+
