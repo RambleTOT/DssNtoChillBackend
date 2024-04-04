@@ -51,12 +51,12 @@ def update_output(contents):
             contents)
 
         return [
-            html.Div(f'Mean Value: {mean_value}'),
-            html.Div(f'Median Value: {median_value}'),
-            html.Div(f'Min Value: {min_value}'),
-            html.Div(f'Max Value: {max_value}'),
-            html.Div(f'Standard Deviation: {std_deviation}'),
-            html.Div(f'Noise Estimate (dB): {noise_estimate}'),
+            html.Div(f'Медианное значение: {mean_value}'),
+            html.Div(f'Среднее значение: {median_value}'),
+            html.Div(f'Минимальное значение: {min_value}'),
+            html.Div(f'Максимальное значение: {max_value}'),
+            html.Div(f'Стандартное квадратичное отклонение: {std_deviation}'),
+            html.Div(f'Шум в дБ: {noise_estimate}'),
             dcc.Graph(
                 figure=go.Figure(
                     data=[go.Scatter(y=magnitude_spectrum[:len(magnitude_spectrum)])],
