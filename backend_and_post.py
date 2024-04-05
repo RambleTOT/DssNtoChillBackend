@@ -23,6 +23,7 @@ def get_statistics():
 
     # Create a datagram socket
     UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+    UDPServerSocket_2 = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
     # Bind to address and ip
     UDPServerSocket.bind((localIP, localPort))
@@ -31,13 +32,13 @@ def get_statistics():
     data = []
 
     while (True):
-        if counter <= 30:
+        if counter <= 20:
             message, address = UDPServerSocket.recvfrom(bufferSize)
             list_raw_data = list(message)
         else:
             t = np.arange(0, len(data) / SAMPLE_RATE, 1 / SAMPLE_RATE)
             signal = np.array(data, dtype=np.float64)
-            signal = signal / 4095 * 2 - 1
+            signal = np.int16((signal / signal.max()) * 32767)
             mean_value = np.mean(data)
             median_value = np.median(data)
             min_value = np.min(data)
